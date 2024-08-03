@@ -1,0 +1,53 @@
+cmake_minimum_required(VERSION 3.30)
+
+set (CXX_STANDARD 20)
+set (TARGET_NAME  {{project_name}})
+set (PROJECT_NAME {{project_name}})
+
+# make sure vcpkg is ready to use
+if (NOT DEFINED ENV{VCPKG_ROOT} OR NOT DEFINED ENV{VCPKG_DEFAULT_TRIPLET})
+  message(NOTICE "The VCPKG_ROOT and VCPKG_DEFAULT_TRIPLET env vars must be defined")
+  message(FATAL_ERROR "See https://learn.microsoft.com/en-us/vcpkg/ for documentation")
+  endif()
+
+# Add the DEBUG definition for debug builds
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_compile_definitions(-DDEBUG)
+endif()
+
+
+project(PROJECT_NAME)
+
+add_executable(${TARGET_NAME} src/main.cpp)
+
+{% if include_fmt %}
+find_package(fmt CONFIG REQUIRED)
+{% endif %}
+
+{% if include_imgui %}
+find_package(glfw3 CONFIG REQUIRED)
+find_package(implot CONFIG REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(GLUT REQUIRED)
+find_package(glm REQUIRED)
+find_package(imgui CONFIG REQUIRED)
+{% endif %}
+
+target_include_directories(${TARGET_NAME}
+  PUBLIC # or PRIVATE or INTERFACE
+  "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+
+target_link_libraries(${TARGET_NAME}
+  {% if include_fmt %} PRIVATE fmt::fmt {% endif %}
+  {% if include_imgui %} 
+  PRIVATE
+    glfw
+    OpenGL::GL
+    GLEW::GLEW
+    GLUT::GLUT
+    imgui::imgui  
+    glm::glm
+  {% endif %}
+)

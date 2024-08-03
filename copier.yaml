@@ -1,0 +1,36 @@
+# questions
+project_name:
+  type: str
+  help: What is the project name?
+
+include_fmt:
+  type: bool
+  help: Include fmt library?
+
+include_imgui:
+  type: bool
+  help: Set up for ImGUI?
+
+# these are templates that will be included in the main.cpp.jinja based
+# on the choice about ImGUI, so exclude them from standard templating
+_exclude:
+  - main_imgui
+  - main_default
+
+_tasks:
+  - command: vcpkg new --application
+
+  - command: vcpkg add port fmt
+    when: "{{ include_fmt }}"
+
+  - command: vcpkg add port "imgui[opengl3-binding, glfw-binding, glut-binding]"
+    when: "{{ include_imgui }}"
+
+  - command: vcpkg add port opengl
+    when: "{{ include_imgui }}"
+
+  - command: vcpkg add port glew
+    when: "{{ include_imgui }}"
+  
+  - command: vcpkg add port implot
+    when: "{{ include_imgui }}"

@@ -1,0 +1,139 @@
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <GLFW/glfw3.h>
+#include <imgui_impl_glfw.h>
+#include <iostream>
+#include <imgui.h>
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0,0,width,height);   
+}
+
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
+
+void imguiSetup(GLFWwindow* window) {
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init();
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+}
+
+GLFWwindow* setup() {
+    GLFWwindow* window;
+    
+    if (!glfwInit())
+        throw std::runtime_error("could not glfwInit()");
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    window = glfwCreateWindow(1200, 750, "{{ project_name }}", NULL, NULL);
+    if (!window) {
+        glfwTerminate();
+        throw std::runtime_error("could not glfwCreateWindow()");
+    }
+
+    // Make the window's context current
+    glfwMakeContextCurrent(window);
+
+    // setting the swap interval to 1 synchronizes the frame rate to the refresh rate
+    glfwSwapInterval(1);
+
+    imguiSetup(window);
+
+    // set alpha blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    
+    if (glewInit() != GLEW_OK) {
+      std::cerr << "Error initializing GLEW" << std::endl;
+      throw std::runtime_error("could not glewInit()");
+    };
+
+    std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+    return window;
+}
+
+int main(void)
+{
+    IMGUI_CHECKVERSION();
+    GLFWwindow* window = setup();
+
+    /*--------- Animation state -----------*/
+
+    float texturePicker = 0.0f;
+    float increment = 0.02f; 
+    float incDelta = 0.02f;
+
+    /*------------- ImGui window state ---------------*/
+
+    bool rotate = true;
+    float rotation = texturePicker;
+    bool show_playground_window = true;
+    bool show_plot_window = true;
+    bool show_knob_window = true;
+    ImVec4 clear_color = ImVec4(0.168f, 0.394f, 0.534f, 1.00f);
+    float e1x{1}, e1y{1};
+
+    /*------------------------------------------*/
+    /*------------- RENDER LOOP ----------------*/
+    /*------------------------------------------*/
+
+    while (!glfwWindowShouldClose(window))
+    {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        /*------------- Input handler ----------------*/
+        processInput(window);
+
+        
+        /*------------- Display Controls ----------------*/
+
+        {
+            static float f = 0.0f;
+            static int counter = 0;
+
+            ImGui::Begin("Settings");
+
+            ImGui::Text("Configure the App below.");              
+            ImGui::Checkbox("Rotate?", &rotate);      
+            ImGui::SliderFloat("Move speed", &incDelta, 0.0f, 0.1f);  
+            ImGui::SliderFloat("Element 1 X", &e1x, -1.0f, 1.0f);  
+            ImGui::SliderFloat("Element 2 Y", &e1y, -1.0f, 1.0f);  
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
+
+        /*------- Swap buffers, poll events ----------*/
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    /*------------- Clean up and end the program ----------------*/
+    
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+    glfwTerminate();
+    return 0;
+}
