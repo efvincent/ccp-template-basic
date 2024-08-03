@@ -16,6 +16,7 @@ include_imgui:
 _exclude:
   - main_imgui
   - main_default
+  - .git
 
 _tasks:
   - command: vcpkg new --application
