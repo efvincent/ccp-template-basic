@@ -17,9 +17,10 @@ _exclude:
   - main_imgui
   - main_default
   - .git
+  - copier.yaml
 
 _tasks:
-  - command: vcpkg new --application
+  - command: vcpkg new --application --name={{ project_name }} --version=0.1.0
 
   - command: vcpkg add port fmt
     when: "{{ include_fmt }}"
@@ -34,4 +35,7 @@ _tasks:
     when: "{{ include_imgui }}"
   
   - command: vcpkg add port implot
+    when: "{{ include_imgui }}"
+
+  - command: vcpkg add port glm
     when: "{{ include_imgui }}"
