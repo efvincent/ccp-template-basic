@@ -4,17 +4,24 @@ set (CXX_STANDARD 20)
 set (TARGET_NAME  {{project_name}})
 set (PROJECT_NAME {{project_name}})
 
-# make sure vcpkg is ready to use
+# make sure vcpkg environment variables are set
 if (NOT DEFINED ENV{VCPKG_ROOT} OR NOT DEFINED ENV{VCPKG_DEFAULT_TRIPLET})
   message(NOTICE "The VCPKG_ROOT and VCPKG_DEFAULT_TRIPLET env vars must be defined")
   message(FATAL_ERROR "See https://learn.microsoft.com/en-us/vcpkg/ for documentation")
   endif()
 
-# Add the DEBUG definition for debug builds
+# define a local variable for vcpkg_root directory
+set(VCPKG_ROOT_DIR $ENV{VCPKG_ROOT})
+message("${VCPKG_ROOT_DIR}")
+
+# Tell CMake where to find vcpkg's CMake toolchain file
+set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE PATH "")
+
+# Add the DEBUG definition for debug builds, assures we can use
+# the same define for debug builds across platforms
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_compile_definitions(-DDEBUG)
 endif()
-
 
 project(PROJECT_NAME)
 
