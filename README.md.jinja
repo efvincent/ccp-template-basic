@@ -1,4 +1,39 @@
 # Project {{project_name}}
 
+## Pre-Requisites
+
+### VCPKG
+To install vcpkg, follow the instructions on the [vcpkg GitHub page](https://vcpkg.org). Must be done before attemting to configure CMake. Once installed, it's going to be run in "manifest mode", meaning the dependency will be installed in the project's directory.
+
+### Additional dependency
+OpenGL is typically installed per platform with an SDK, so should be installed manually. CMake is required to configure the build, so the build cannot download CMake, it should already be installed. Lastly, you'll need a C++ compiler up to the C++17 standard for the platform you intend to build.
+
+* [OpenGL](https://www.opengl.org)
+* [CMake](https://cmake.org)
+* A C++ compiler that supports C++17
+  * [GCC](https://gcc.gnu.org)
+  * [Clang](https://clang.llvm.org)
+
+## Configuration
+You can configure the project manually by creating a build directory and running CMake from there (`$ cmake ..`). However, if you're using VSCode and have the CMake and C++ extensions installed, you can use the provided CMake tasks to configure the project.
+
 ## Building
 This project uses [CMake](https://cmake.org) project management and [vcpkg](https://learn.microsoft.com/en-us/vcpkg/) package management.
+
+
+When adding a new dependency, use `vcpkg` like this:
+
+```bash
+$ cd <project directory>
+$ vcpkg add port fmt
+```
+The output should give hints to the usage. For example, curl's usage after adding the vcpkg package and configuring the project states:
+
+```bash
+curl is compatible with built-in CMake targets:
+
+    find_package(CURL REQUIRED)
+    target_link_libraries(main PRIVATE CURL::libcurl)
+```
+
+Edit your `CMakeList.txt`, and add these lines. You should see where the other dependencies call `find_package` and `target_link_libraries`, follow thier examples.
