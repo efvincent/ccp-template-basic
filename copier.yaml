@@ -6,6 +6,12 @@ project_name:
 include_fmt:
   type: bool
   help: Include fmt library?
+  default: true
+
+include_logging:
+  type: bool
+  help: Include SPDLOG logging library?
+  default: true
 
 include_imgui:
   type: bool
@@ -27,6 +33,9 @@ _tasks:
 
   - command: vcpkg add port "imgui[opengl3-binding, glfw-binding, glut-binding]"
     when: "{{ include_imgui }}"
+
+  - command: vcpkg add port spdlog
+    when: "{{ include_logging }}"
 
   - command: vcpkg add port opengl
     when: "{{ include_imgui }}"

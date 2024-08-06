@@ -6,6 +6,7 @@
 #include <imgui.h>
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+{% if include_logging %}#include <spdlog/spdlog.h>{% endif %}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0,0,width,height);   
@@ -57,11 +58,18 @@ GLFWwindow* setup() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
     
     if (glewInit() != GLEW_OK) {
+      {% if include_logging %}
+      spdlog::error("Error initializing GLEW");
+      {% else %}
       std::cerr << "Error initializing GLEW" << std::endl;
+      {% endif %}
       throw std::runtime_error("could not glewInit()");
     };
-
+    {% if include_logging %}
+    spdlog::info(glGetString(GL_VERSION));
+    {% else %}
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+    {% endif %}
     return window;
 }
 

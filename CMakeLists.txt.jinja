@@ -44,10 +44,12 @@ find_package(imgui CONFIG REQUIRED)
 target_include_directories(${TARGET_NAME}
   PUBLIC # or PRIVATE or INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
+  {%if include_logging %} "${spdlog_INCLUDE_DIRS}" {% endif %}
 )
 
 target_link_libraries(${TARGET_NAME}
   {% if include_fmt %} PRIVATE fmt::fmt {% endif %}
+  {% if include_logging %} PRIVATE "${spdlog_LIBRARIES}" {% endif %}
   {% if include_imgui %} 
   PRIVATE
     glfw
