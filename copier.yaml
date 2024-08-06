@@ -13,6 +13,11 @@ include_logging:
   help: Include SPDLOG logging library?
   default: true
 
+include_gtest:
+  type: bool
+  help: Set up for gtest?
+  default: false
+
 include_imgui:
   type: bool
   help: Set up for ImGUI?
