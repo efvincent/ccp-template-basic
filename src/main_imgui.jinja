@@ -66,7 +66,7 @@ GLFWwindow* setup() {
       throw std::runtime_error("could not glewInit()");
     };
     {% if include_logging %}
-    spdlog::info(glGetString(GL_VERSION));
+    spdlog::info(reintepret_cast<const char*>(glGetString(GL_VERSION)));
     {% else %}
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
     {% endif %}
