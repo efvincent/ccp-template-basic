@@ -9,7 +9,7 @@ REM Switch to the build directory
 cd build
 
 REM Run cmake to configure the project
-cmake ..
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 
 REM Build the project
 cmake --build .

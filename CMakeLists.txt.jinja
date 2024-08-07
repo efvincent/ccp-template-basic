@@ -4,6 +4,13 @@ set (CXX_STANDARD 20)
 set (TARGET_NAME  {{project_name}})
 set (PROJECT_NAME {{project_name}})
 
+# have CMake export the commands we need to send to the compiler (things
+# like include path and compiler switches). This writes the file
+# compile_commands.json to the build folder where the c_cpp_properties.json
+# file will refer to it and use it for vscode's intellisense
+# compiler settings
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # make sure vcpkg environment variables are set
 if (NOT DEFINED ENV{VCPKG_ROOT} OR NOT DEFINED ENV{VCPKG_DEFAULT_TRIPLET})
   message(NOTICE "The VCPKG_ROOT and VCPKG_DEFAULT_TRIPLET env vars must be defined")
@@ -50,20 +57,14 @@ target_include_directories(${TARGET_NAME}
 target_link_libraries(${TARGET_NAME}
   {% if include_fmt %} PRIVATE fmt::fmt {% endif %}
   {% if include_logging %} PRIVATE "${spdlog_LIBRARIES}" {% endif %}
-  {% if include_imgui %} 
+  {% if include_imgui %}
   PRIVATE
     glfw
     OpenGL::GL
     GLEW::GLEW
     GLUT::GLUT
-    imgui::imgui  
+    imgui::imgui
     glm::glm
   {% endif %}
 )
 
-# have CMake export the commands we need to send to the compiler (things
-# like include path and compiler switches). This writes the file 
-# compile_commands.json to the build folder where the c_cpp_properties.json
-# file will refer to it and use it for vscode's intellisense 
-# compiler settings
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

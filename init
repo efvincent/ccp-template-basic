@@ -7,7 +7,7 @@ mkdir -p build
 cd build
 
 # Run cmake to configure the project
-cmake ..
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 
 # Build the project
 cmake --build .
