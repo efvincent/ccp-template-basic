@@ -64,6 +64,7 @@ _tasks:
         {% if platform == 'win32' %}
           init.bat
         {% else %}
+          chmod +x init
           ./init
         {% endif %}
       {% endif %}
