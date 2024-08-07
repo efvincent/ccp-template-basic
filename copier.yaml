@@ -22,6 +22,11 @@ include_imgui:
   type: bool
   help: Set up for ImGUI?
 
+init_project:
+  type: bool
+  help: Initialize CMake?
+  default: true
+
 # these are templates that will be included in the main.cpp.jinja based
 # on the choice about ImGUI, so exclude them from standard templating
 _exclude:
@@ -53,3 +58,12 @@ _tasks:
 
   - command: vcpkg add port glm
     when: "{{ include_imgui }}"
+
+  - command: |
+      if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* ]]; then
+          ./init.sh
+      elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+          call init.bat
+      else
+          echo "Unsupported platform"
+    when: "{{ init_project }}"
