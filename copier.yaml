@@ -61,9 +61,9 @@ _tasks:
 
   - command: |
       {% if init_project %}
-      {% if cookiecutter._copier_conf.os == 'posix' %}
+      {% if platform == 'linux' or platform == 'darwin' %}
       ./init.sh
-      {% elif cookiecutter._copier_conf.os == 'nt' %}
+      {% elif platform == 'win32' %}
       init.bat
       {% else %}
       echo "Unsupported platform"
