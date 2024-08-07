@@ -52,7 +52,7 @@ _tasks:
 
   - command: vcpkg add port glew
     when: "{{ include_imgui }}"
-  
+
   - command: vcpkg add port implot
     when: "{{ include_imgui }}"
 
@@ -61,12 +61,10 @@ _tasks:
 
   - command: |
       {% if init_project %}
-      {% if platform == 'linux' or platform == 'darwin' %}
-      ./init.sh
-      {% elif platform == 'win32' %}
-      init.bat
-      {% else %}
-      echo "Unsupported platform"
-      {% endif %}
+        {% if platform == 'win32' %}
+          init.bat
+        {% else %}
+          ./init
+        {% endif %}
       {% endif %}
     when: "{{ init_project }}"
