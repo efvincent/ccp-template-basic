@@ -60,10 +60,13 @@ _tasks:
     when: "{{ include_imgui }}"
 
   - command: |
-      if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* ]]; then
-          ./init.sh
-      elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
-          call init.bat
-      else
-          echo "Unsupported platform"
+      {% if init_project %}
+      {% if cookiecutter._copier_conf.os == 'posix' %}
+      ./init.sh
+      {% elif cookiecutter._copier_conf.os == 'nt' %}
+      init.bat
+      {% else %}
+      echo "Unsupported platform"
+      {% endif %}
+      {% endif %}
     when: "{{ init_project }}"
