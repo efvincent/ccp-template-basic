@@ -29,36 +29,32 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_compile_definitions(-DDEBUG)
 endif()
 
+# set the project up
 project(PROJECT_NAME)
 
+# determine the C++ standard to use
 {% if use_cpp23 %}
 set (CMAKE_CXX_STANDARD 23)
-# Check for GCC or Clang and add the -fmodules-ts flag
-# if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-#   message(STATUS "Using GCC")
-#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmodules-ts")
-# elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-#   message(STATUS "Using Clang")
-#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmodules")
-# else()
-#   message(WARNING "Unknown compiler")
-# endif()
 {% else %}
 set (CMAKE_CXX_STANDARD 20)
 {% endif %}
 set (CMAKE_CXX_STANDARD_REQUIRED True)
 
+# add the source files to go to the executable
 add_executable(${TARGET_NAME} src/main.cpp)
 
 {% if include_fmt %}
+# include the fmt package
 find_package(fmt CONFIG REQUIRED)
 {% endif %}
 
-{% if include_logging %} 
+{% if include_logging %}
+# include the spdlog package 
 find_package(spdlog CONFIG REQUIRED) 
 {% endif %}
 
 {% if include_imgui %}
+# include packages required for ImGui with an OpenGL back end
 find_package(glfw3 CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -68,10 +64,12 @@ find_package(glm REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 {% endif %}
 
+# set include directories
 target_include_directories(${TARGET_NAME}
   PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
+# set link libraries to use
 target_link_libraries(${TARGET_NAME}
   {% if include_fmt %} PRIVATE fmt::fmt {% endif %}
   {% if include_logging %} PRIVATE spdlog::spdlog  {% endif %}
