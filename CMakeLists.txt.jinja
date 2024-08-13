@@ -1,6 +1,22 @@
 cmake_minimum_required(VERSION 3.30)
 
-set (CXX_STANDARD 20)
+{% if use_cpp23 %}
+set (CMAKE_CXX_STANDARD 23)
+# Check for GCC or Clang and add the -fmodules-ts flag
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  message(STATUS "Using GCC")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmodules-ts")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  message(STATUS "Using Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmodules")
+else()
+  message(WARNING "Unknown compiler")
+endif()
+{% else %}
+set (CMAKE_CXX_STANDARD 20)
+{% endif %}
+set (CMAKE_CXX_STANDARD_REQUIRED True)
+
 set (TARGET_NAME  {{project_name}})
 set (PROJECT_NAME {{project_name}})
 
@@ -38,6 +54,10 @@ add_executable(${TARGET_NAME} src/main.cpp)
 find_package(fmt CONFIG REQUIRED)
 {% endif %}
 
+{% if include_logging %} 
+find_package(spdlog CONFIG REQUIRED) 
+{% endif %}
+
 {% if include_imgui %}
 find_package(glfw3 CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
@@ -49,15 +69,13 @@ find_package(imgui CONFIG REQUIRED)
 {% endif %}
 
 target_include_directories(${TARGET_NAME}
-  PUBLIC # or PRIVATE or INTERFACE
-  "${CMAKE_CURRENT_SOURCE_DIR}/include"
-  {%if include_logging %} "${spdlog_INCLUDE_DIRS}" {% endif %}
+  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
 target_link_libraries(${TARGET_NAME}
   {% if include_fmt %} PRIVATE fmt::fmt {% endif %}
-  {% if include_logging %} PRIVATE "${spdlog_LIBRARIES}" {% endif %}
-  {% if include_imgui %}
+  {% if include_logging %} PRIVATE spdlog::spdlog  {% endif %}
+  {% if include_imgui %} 
   PRIVATE
     glfw
     OpenGL::GL

@@ -22,6 +22,10 @@ include_imgui:
   type: bool
   help: Set up for ImGUI?
 
+use_cpp23:
+  type: bool
+  help: Use C++23 standard?
+
 init_project:
   type: bool
   help: Initialize CMake?

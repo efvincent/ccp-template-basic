@@ -1,18 +1,25 @@
 {% if include_logging %}#include <spdlog/spdlog.h>{% endif %}
 {% if include_fmt %}#include <fmt/core.h>
-#include <fmt/color.h>
+#include <fmt/color.h> 
+{% else %}#include <iostream>
+{% endif %}
+{% if use_cpp23 %} #include <print> {% endif %}
 
 int main() {
   {% if include_logging %}spdlog::info("logging enabled");{% endif %}
+  {% if include_fmt %}
   fmt::print(fmt::emphasis::italic | fmt::fg(fmt::color::red),   "Hello ");
   fmt::print(fmt::emphasis::bold   | fmt::fg(fmt::color::green), "{{project_name}}\n");  
+  {% else %}
+  std::cout << "Hello {{project_name}}!" << std::endl;
+  {% endif %}
+  {% if use_cpp23 %}
+  std::print("Hello {{project_name}}\n");
+  {% endif %}
   return 0;
 }
-{% else %}#include <iostream>
-{% if include_spdlog %}#include <spdlog/spdlog.h>{% endif %}
 int main() {
   {% if include_logging %}spdlog::info("logging enabled");{% endif %}
-  std::cout << "Hello {{project_name}}!" << std::endl;
   return 0;
 }
 {% endif %}
