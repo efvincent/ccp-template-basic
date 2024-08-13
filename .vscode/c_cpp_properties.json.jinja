@@ -3,7 +3,8 @@
     {
       "name": "Linux",
       "compileCommands": "${workspaceFolder}/build/compile_commands.json",
-      "cppStandard": "c++20",
+      {% if use_cpp23 %}"cppStandard": "c++23",{% else %}
+      "cppStandard": "c++20",{% endif %}
       "configurationProvider": "ms-vscode.cmake-tools"
     }
   ],
