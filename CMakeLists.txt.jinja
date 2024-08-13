@@ -70,8 +70,8 @@ target_include_directories(${TARGET_NAME}
 )
 
 # set link libraries to use
-{% if include_fmt %}target_link_libraries(${TARGET_NAME} PRIVATE fmt::fmt {% endif %})
-{% if include_logging %}target_link_libraries(${TARGET_NAME} PRIVATE spdlog::spdlog  {% endif %})
+{% if include_fmt %}target_link_libraries(${TARGET_NAME} PRIVATE fmt::fmt){% endif %}
+{% if include_logging %}target_link_libraries(${TARGET_NAME} PRIVATE spdlog::spdlog){% endif %}
 {% if include_imgui %}target_link_libraries(${TARGET_NAME}
   PRIVATE
     glfw
